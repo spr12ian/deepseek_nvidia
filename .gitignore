@@ -1,5 +1,7 @@
+output/
+
 # queries.py may contain private information
-queries.py
+_queries.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
