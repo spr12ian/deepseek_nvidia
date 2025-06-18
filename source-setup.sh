@@ -28,8 +28,6 @@ requirements_file="requirements.txt"
 if [[ -s "$requirements_file" ]]; then
     python3 -m pip install -r requirements.txt
 else
-    install-python-package openai
-
     python3 -m pip freeze >requirements.txt
 fi
 
