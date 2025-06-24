@@ -1,4 +1,0 @@
-prompts:
-    - name: isa_transfer
-    - prompt: |
-        Which is the best month to transfer ISAs?
