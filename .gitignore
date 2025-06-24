@@ -1,7 +1,7 @@
 output/
+data/private_prompts.yaml
+requirements.txt
 
-# queries.py may contain private information
-_queries.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

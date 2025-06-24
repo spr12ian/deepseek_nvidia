@@ -33,7 +33,7 @@ class DeepseekNvidia:
         except Exception as e:
             print(f"Error getting response for query '{query}': {e}")
             return None
-    
+
     def print_response(self, response) -> None:
         if response is None:
             print("No response received.")
