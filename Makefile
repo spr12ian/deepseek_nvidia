@@ -81,11 +81,19 @@ update_interpreter_path: ## Update python.defaultInterpreterPath using Hatch env
 		if [[ ! -f "$(VSCODE_WORKSPACE_FILE)" ]]; then \
 			echo "{}" > "$(VSCODE_WORKSPACE_FILE)"; \
 		fi; \
+		echo "✔ Updating python.defaultInterpreterPath to: $$python_path"; \
 		jq --arg path "$$python_path" \
-			". + { \"python.defaultInterpreterPath\": \$path }" \
+			'"'"'. + {"python.defaultInterpreterPath": $path}'"'"' \
 			"$(VSCODE_WORKSPACE_FILE)" | sponge "$(VSCODE_WORKSPACE_FILE)"; \
 		echo "✔ Updated $(VSCODE_WORKSPACE_FILE)"; \
-		echo "  Set python.defaultInterpreterPath = $$python_path"'
+		echo "Validating JSON..."; \
+		jq empty "$(VSCODE_WORKSPACE_FILE)" && echo "✅ JSON is valid." || \
+			{ echo "❌ JSON is invalid."; exit 1; }'
+
+
+
+
+
 
 
 
