@@ -2,6 +2,7 @@
 
 .PHONY: \
 	cleanup \
+	debug \
 	distclean \
 	format \
 	freeze \
@@ -12,13 +13,23 @@
 	test \
 	tree \
 	typecheck \
-	update
+	update \
+	update_interpreter_path
+
+PROJECT_NAME := $(notdir $(CURDIR))
+REPO_DIR=$(GITHUB_PARENT)/$(GITHUB_VSCODE_REPO)
+VSCODE_WORKSPACE_FILE := $(REPO_DIR)/workspaces/$(PROJECT_NAME).code-workspace
 
 cleanup: ## Remove Python caches and build artifacts
 	find . -type d -name '__pycache__' -exec rm -rf {} +
 	find . -type f -name '*.py[co]' -delete
 	rm -rf .pytest_cache .ruff_cache .mypy_cache
 	@echo "🧹 Cleanup complete."
+
+debug:
+	@echo "REPO_DIR: $(REPO_DIR)"
+	@echo "VSCODE_WORKSPACE_FILE: $(VSCODE_WORKSPACE_FILE)"
+	@ls -l "$(VSCODE_WORKSPACE_FILE)"
 
 distclean: ## Remove all caches and Hatch environment
 	hatch env remove default || true
@@ -57,3 +68,24 @@ typecheck: ## Run mypy type checks
 update: ## Update all packages inside the Hatch environment
 	hatch run update
 	make freeze
+
+update_interpreter_path: ## Update python.defaultInterpreterPath using Hatch environment
+	@bash -c '\
+		echo "Detecting Hatch environment path..."; \
+		env_path="$$(hatch env find)"; \
+		if [[ "$$OSTYPE" == "msys" || "$$OSTYPE" == "win32" ]]; then \
+			python_path="$${env_path//\//\\\\}\\\\Scripts\\\\python.exe"; \
+		else \
+			python_path="$$env_path/bin/python"; \
+		fi; \
+		if [[ ! -f "$(VSCODE_WORKSPACE_FILE)" ]]; then \
+			echo "{}" > "$(VSCODE_WORKSPACE_FILE)"; \
+		fi; \
+		jq --arg path "$$python_path" \
+			". + { \"python.defaultInterpreterPath\": \$path }" \
+			"$(VSCODE_WORKSPACE_FILE)" | sponge "$(VSCODE_WORKSPACE_FILE)"; \
+		echo "✔ Updated $(VSCODE_WORKSPACE_FILE)"; \
+		echo "  Set python.defaultInterpreterPath = $$python_path"'
+
+
+
