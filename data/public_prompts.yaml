@@ -1,5 +1,0 @@
-prompts:
-    - date: 2025-06-24
-      name: isa_transfer
-      prompt: |
-        Which is the best month to transfer ISAs?
