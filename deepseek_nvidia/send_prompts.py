@@ -1,25 +1,29 @@
 from pathlib import Path
 from deepseek_nvidia.classes.deepseek_nvidia import DeepseekNvidia
-import yaml
+import tomllib as toml
 from deepseek_nvidia.classes.prompt import Prompt
 
 def get_prompts(file_path:Path)->list[Prompt]:
-    with open(file_path, encoding="utf-8") as f:
-        data = yaml.safe_load(f)
+    data = toml.loads(file_path.read_text(encoding="utf-8"))
+
+    if "prompts" not in data:
+        raise ValueError(f"'prompts' section missing in {file_path}")
 
     return [Prompt(**item) for item in data["prompts"]]
 
-def strip_multiline_string(multiline_string) -> str:
-    lines = multiline_string.split("\n")
-    stripped_lines = [line.strip() for line in lines]
+def strip_multiline_string(multiline_string:str) -> str:
+    lines = multiline_string.splitlines()
+    stripped_lines = [line.strip() for line in lines if line.strip()]
     return "\n".join(stripped_lines)
 
 
 def main() -> None:
     deepseek_nvidia = DeepseekNvidia()
-    private_prompts=get_prompts(Path('data/private_prompts.yaml'))
-    public_prompts=get_prompts(Path('data/public_prompts.yaml'))
+    private_prompts=get_prompts(Path('data/private_prompts.toml'))
+    public_prompts=get_prompts(Path('data/public_prompts.toml'))
     prompts=private_prompts+public_prompts
+    print(f"📄 Loaded {len(prompts)} prompts from private + public TOML files")
+
     for prompt in prompts:
         try:
             stripped_query = strip_multiline_string(prompt.prompt)
