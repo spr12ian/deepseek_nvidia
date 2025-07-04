@@ -1,6 +1,7 @@
 output/
 data/private_prompts.yaml
 requirements.txt
+.vscode/
 
 
 # Byte-compiled / optimized / DLL files
