@@ -6,10 +6,7 @@ authors = [{ name = "Ian Sweeney" }]
 requires-python = ">=3.12"
 dependencies = [
   # Add runtime dependencies here
-  "numpy",
-  "openai",
-  "pyyaml",
-  "torch",
+  "openai"
 ]
 
 [build-system]
