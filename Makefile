@@ -17,7 +17,7 @@
 	update_interpreter_path
 
 PROJECT_NAME := $(notdir $(CURDIR))
-REPO_DIR=$(GITHUB_PARENT_DIR)/$(GITHUB_REPO_VSCODE)
+REPO_DIR=$(GITHUB_PROJECTS_DIR)/$(GITHUB_REPO_VSCODE)
 VSCODE_WORKSPACE_FILE := $(REPO_DIR)/workspaces/$(PROJECT_NAME).code-workspace
 
 cleanup: ## Remove Python caches and build artifacts
